@@ -7,12 +7,22 @@ import {
   TransportKind,
 } from "vscode-languageclient/node";
 
+import { MyLangCompletionItemProvider } from "./autocomplete";
+
 let client: LanguageClient | undefined;
 
 export function activate(_context: vscode.ExtensionContext) {
   client = createLanguageClient();
   // Start the client. This will also launch the server
   client.start();
+
+  const provider = new MyLangCompletionItemProvider();
+  const selector: vscode.DocumentSelector = { language: "gleam", scheme: "file" };
+
+  _context.subscriptions.push(
+    vscode.languages.registerCompletionItemProvider(selector, provider)
+  );
+
 }
 
 // this method is called when your extension is deactivated
